@@ -19,5 +19,6 @@ public/js
 public/mix-manifest.json
 .DS_Store
 docker/mysql
+.vscode
 
 
