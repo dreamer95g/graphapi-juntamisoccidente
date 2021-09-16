@@ -1,0 +1,37 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    roles: [Role] @belongsToMany
+    images: [Image] @belongsToMany
+}
+
+input UpdateUserInput {
+    id: ID!
+    name: String
+    email: String
+    roles: UserRolesInput
+    images: UserImageInput
+}
+
+input UserRolesInput {
+    connect: [ID!]
+    disconnect: [ID!]
+}
+
+input UserImageInput {
+    connect: [ID!]
+    disconnect: [ID!]
+}
+
+extend type Query {
+
+    users(orderBy: _ @orderBy(columns: ["created_at"])): [User] @all @softDeletes @can(ability: "view")  @guard(with: ["api"])
+	user(id: ID @eq): User @find @softDeletes @can(ability: "view") @guard(with: ["api"])
+	me: User @middleware(checks: ["auth:api"]) @auth
+}
+
+extend type Mutation {
+	updateUser(input: UpdateUserInput! @spread): User @update  @can(ability: "update") @guard(with: ["api"])
+	deleteUser(id: ID! @rules(apply: ["required"])): User @delete  @can(ability: "delete") @guard(with: ["api"])
+}

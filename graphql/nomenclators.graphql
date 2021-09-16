@@ -1,0 +1,178 @@
+type Level {
+    id: ID!
+    name: String!
+}
+
+type Language {
+    id: ID!
+    name: String!
+}
+
+type Church {
+    id: ID!
+    name: String!
+}
+
+type District {
+    id: ID!
+    name: String!
+}
+
+type Mission {
+    id: ID!
+    name: String!
+}
+
+type Sponsor {
+    id: ID!
+    name: String!
+}
+
+type Department {
+    id: ID!
+    name: String!
+}
+
+type Role {
+    id: ID!
+    name: String!
+    token: String!
+}
+
+
+extend type Mutation {
+
+	createRole(
+	name: String!
+	): Role @create @can(ability:"create") @guard(with: ["api"])
+
+	updateRole(
+	id: ID!
+	name: String!
+	): Role @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteRole(id: ID!): Role @delete  @can(ability:"delete") @guard(with: ["api"])
+
+
+	createChurch(name: String!): Church @create @can(ability:"create") @guard(with: ["api"])
+
+	updateChurch(
+	id: ID!
+	name: String!
+	): Church @update @can(ability: "update") @guard(with: ["api"])
+
+	deleteChurch(id: ID!): Church @delete @can(ability:"delete") @guard(with: ["api"])
+
+
+	createDepartment(name: String!): Department @create @can(ability:"create") @guard(with: ["api"])
+
+	updateDepartment(
+	id: ID!
+	name: String!
+	): Department @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteDepartment(id: ID!): Department @delete @can(ability:"delete") @guard(with: ["api"])
+
+
+	createDistrict(
+	name: String!
+	): District @create @can(ability:"create") @guard(with: ["api"])
+
+	updateDistrict(
+	id: ID!
+	name: String!
+	): District @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteDistrict(id: ID!): District @delete @can(ability:"delete") @guard(with: ["api"])
+
+	createLanguage(
+	name: String!
+	): Language @create @can(ability:"create") @guard(with: ["api"])
+
+	updateLanguage(
+	id: ID!
+	name: String!
+	): Language @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteLanguage(id: ID!): Language @delete @can(ability:"delete") @guard(with: ["api"])
+
+	createLevel(
+	name: String!
+	): Language @create @can(ability:"create") @guard(with: ["api"])
+
+	updateLevel(
+	id: ID!
+	name: String!
+	): Level @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteLevel(id: ID!): Level @delete @can(ability:"delete") @guard(with: ["api"])
+
+	createMission(
+	name: String!
+	): Mission @create @can(ability:"create") @guard(with: ["api"])
+
+	updateMission(
+	id: ID!
+	name: String!
+	): Mission @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteMission(id: ID!): Mission @delete @can(ability:"delete") @guard(with: ["api"])
+
+	createSponsor(
+	name: String!
+	): Sponsor @create @can(ability:"create") @guard(with: ["api"])
+
+	updateSponsor(
+	id: ID!
+	name: String!
+	): Sponsor @update @can(ability:"update") @guard(with: ["api"])
+
+	deleteSponsor(id: ID!): Sponsor @delete @can(ability:"delete") @guard(with: ["api"])
+}
+
+extend type Query {
+
+	levels: [Level] @all @softDeletes @guard(with: ["api"])
+	level(id: ID @eq): Level @find @softDeletes @guard(with: ["api"])
+	levelWhere(where: _ @whereConditions(columns: ["id", "name"])): Level
+	@find
+	@softDeletes @guard(with: ["api"])
+
+	# level(name: String @eq): [Level] @find @softDeletes
+
+	churches: [Church] @softDeletes @paginate(type: "paginator" model:"App\\Models\\Nomenclators\\Church") @guard(with: ["api"])
+	church(id: ID @eq): Church @find @softDeletes
+	churchWhere(where: _ @whereConditions(columns: ["id", "name"])): Church
+	@find
+	@softDeletes @guard(with: ["api"])
+
+	departments: [Department] @all @softDeletes  @guard(with: ["api"])
+	department(id: ID @eq): Department @find @softDeletes @guard(with: ["api"])
+
+	languages: [Language] @all @softDeletes @guard(with: ["api"])
+	language(id: ID @eq): Language @find @softDeletes @guard(with: ["api"])
+	languageWhere(where: _ @whereConditions(columns: ["id", "name"])): Language
+	@find @softDeletes @guard(with: ["api"])
+	# language(id: ID @eq): Language @find @softDeletes
+
+	sponsors: [Sponsor] @all @softDeletes @guard(with: ["api"])
+	sponsor(id: ID @eq): Sponsor @find @softDeletes  @guard(with: ["api"])
+    sponsorWhere(where: _ @whereConditions(columns: ["id", "name"])): Sponsor
+	@find
+	@softDeletes @guard(with: ["api"])
+
+	districts: [District] @all  @softDeletes @guard(with: ["api"])
+	district(id: ID @eq): District @find @softDeletes @guard(with: ["api"])
+	districtWhere(where: _ @whereConditions(columns: ["id", "name"])): District
+	@find
+	@softDeletes @guard(with: ["api"])
+
+	missions: [Mission] @paginate(type: "paginator" model:"App\\Models\\Nomenclators\\Mission")  @softDeletes @guard(with: ["api"])
+	mission(id: ID @eq): Mission @find @softDeletes @guard(with: ["api"])
+	missionWhere(where: _ @whereConditions(columns: ["id", "name"])): Mission
+	@find
+	@softDeletes @guard(with: ["api"])
+
+	roles: [Role] @all @softDeletes @can(ability:"view") @guard(with: ["api"])
+	role(id: ID @eq): Role @find @softDeletes @can(ability:"view") @guard(with: ["api"])
+}

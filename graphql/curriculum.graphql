@@ -1,0 +1,108 @@
+type Curriculum {
+	id: ID!
+	dni: String
+	name: String
+	sex: Boolean
+	profession: String
+	nationality: String
+	graduation_place: String
+	adress: String
+	academic_formation: String
+	work_experience: String
+	vision_goals: String
+	conv_experience: String
+	level: Level @belongsTo
+	language: Language @belongsTo
+	images: [Image] @belongsToMany
+}
+
+input UpdateCurriculumInput {
+	id: ID!
+	dni: String
+	name: String
+	sex: Boolean
+	profession: String
+	nationality: String
+	graduation_place: String
+	adress: String
+	academic_formation: String
+	work_experience: String
+	vision_goals: String
+	conv_experience: String
+	level: CurriculumLevelInput
+	language: CurriculumLanguageInput
+	images: CurriculumImageInput
+}
+
+input CreateCurriculumInput {
+	dni: String!
+	name: String!
+	sex: Boolean!
+	profession: String!
+	nationality: String!
+	graduation_place: String!
+	adress: String!
+	academic_formation: String!
+	work_experience: String!
+	vision_goals: String!
+	conv_experience: String!
+	level: CurriculumLevelInput
+	language: CurriculumLanguageInput
+	images: CurriculumImageInput
+}
+
+input CurriculumImageInput {
+	connect: [ID]
+	disconnect: [ID]
+}
+
+input CurriculumLevelInput {
+	connect: ID
+}
+
+input CurriculumLanguageInput {
+	connect: ID
+}
+
+extend type Mutation {
+	# CURRICULUM
+	createCurriculum(input: CreateCurriculumInput! @spread): Curriculum @create @can(ability: "create") @guard(with: ["api"])
+
+	updateCurriculum(input: UpdateCurriculumInput! @spread): Curriculum @update  @can(ability: "update", find: "id") @guard(with: ["api"])
+
+	deleteCurriculum(id: ID! @rules(apply: ["required"])): Curriculum @delete @can(ability: "delete", find: "id") @guard(with: ["api"])
+
+	deleteCurricula(ids: [Int]): [Curriculum] @can(ability: "delete") @guard(with: ["api"])
+}
+
+extend type Query {
+	# # Curriculum
+	curriculumWhere(
+	where: _
+	@whereConditions(
+	columns: [
+	"id"
+	"dni"
+	"name"
+	"sex"
+	"profession"
+	"nationality"
+	"graduation_place"
+	"images"
+	]
+	)
+	): Curriculum @find @softDeletes @guard(with: ["api"])
+
+	curricula: [Curriculum] @paginate(type: "paginator" model: "App\\Models\\Curriculum\\Curriculum") @softDeletes @guard(with: ["api"])
+
+	curriculumByLevel(
+	hasLevel: _ @whereHasConditions(columns: ["id", "name"])
+	): [Curriculum] @all @softDeletes @guard(with: ["api"])
+
+	curriculumByLanguage(
+	hasLanguage: _ @whereHasConditions(columns: ["id", "name"])
+	): [Curriculum] @all @softDeletes @guard(with: ["api"])
+
+	# curricula: [Curriculum] @all @softDeletes
+	curriculum(id: ID @eq): Curriculum @find @softDeletes @guard(with: ["api"])
+}

@@ -1,0 +1,178 @@
+type Concept {
+    id: ID!
+    current_membership: Int
+    congregants_count: Int
+    cells_count: Int
+    missions_count: Int
+    baptism_candidates: Int
+    baptism: Int
+    new_believers_discipled: Int
+    trained_leaders: Int
+    founded_cells: Int
+    founded_missions: Int
+    founded_churches: Int
+    evangelistic_visits: Int
+    discipleship_visits: Int
+    building_visits: Int
+    faith_professions: Int
+    reconciled_brothers: Int
+    ministered_lives: Int
+    cults_held: Int
+}
+
+type Payroll {
+    id: ID!
+    title: String
+    subtitle: String
+    year: Int
+    month: Int
+    pastor: Boolean
+    district: District @belongsTo
+    church: Church @belongsTo
+    mission: Mission @belongsTo
+    concept: Concept @belongsTo
+    curriculum: Curriculum @belongsTo
+    sponsors: [Sponsor] @belongsToMany
+    sundays: [Sunday] @belongsToMany
+}
+
+input UpdatePayrollInput {
+    id: ID!
+    title: String
+    subtitle: String
+    year: Int
+    month: Int
+    pastor: Boolean
+    district: PayrollDistrictInput
+    church: PayrollChurchInput
+    mission: PayrollMissionInput
+    concept: ConceptInput
+    curriculum: PayrollCurriculumInput
+    sponsors: PayrollSponsorsInput
+    sundays: PayrollSundaysInput
+}
+
+input CreatePayrollInput {
+    title: String!
+    subtitle: String!
+    year: Int!
+    month: Int!
+    pastor: Boolean!
+    district: PayrollDistrictInput
+    church: PayrollChurchInput
+    mission: PayrollMissionInput
+    concept: ConceptInput
+    curriculum: PayrollCurriculumInput
+    sponsors: PayrollSponsorsInput
+    sundays: PayrollSundaysInput
+}
+
+input PayrollDistrictInput {
+    connect: ID!
+}
+
+input PayrollChurchInput {
+    connect: ID!
+}
+
+input PayrollMissionInput {
+    connect: ID!
+}
+
+input ConceptInput {
+    delete: ID
+    create: CreateConceptInput
+    update: UpdateConceptInput
+}
+
+input CreateConceptInput {
+    current_membership: Int!
+    congregants_count: Int!
+    cells_count: Int!
+    missions_count: Int!
+    baptism_candidates: Int!
+    baptism: Int!
+    new_believers_discipled: Int!
+    trained_leaders: Int!
+    founded_cells: Int!
+    founded_missions: Int!
+    founded_churches: Int!
+    evangelistic_visits: Int!
+    discipleship_visits: Int!
+    building_visits: Int!
+    faith_professions: Int!
+    reconciled_brothers: Int!
+    ministered_lives: Int!
+    cults_held: Int!
+}
+
+input UpdateConceptInput {
+    id: ID!
+    current_membership: Int
+    congregants_count: Int
+    cells_count: Int
+    missions_count: Int
+    baptism_candidates: Int
+    baptism: Int
+    new_believers_discipled: Int
+    trained_leaders: Int
+    founded_cells: Int
+    founded_missions: Int
+    founded_churches: Int
+    evangelistic_visits: Int
+    discipleship_visits: Int
+    building_visits: Int
+    faith_professions: Int
+    reconciled_brothers: Int
+    ministered_lives: Int
+    cults_held: Int
+}
+
+input PayrollCurriculumInput {
+    connect: ID!
+}
+
+input PayrollSponsorsInput {
+    connect: [ID!]
+    disconnect: [ID!]
+}
+
+input PayrollSundaysInput {
+    create: [CreateSundayInput!]
+    update: [UpdateSundayInput!]
+    disconnect: [ID!]
+    delete: [ID!]
+}
+
+extend type Query {
+    payrolls: [Payroll] @paginate(type: "paginator" model:"App\\Models\\Payroll\\Payroll") @softDeletes @guard(with: ["api"])
+
+    payrollsWhere(
+	where: _
+	@whereConditions(
+	columns: [
+	"id"
+	"title"
+	"subtitle"
+	"year"
+	"month"
+	"pastor"
+	"curriculum_id"
+	]
+	)
+	): [Payroll] @all @softDeletes @guard(with: ["api"])
+
+	payroll(id: ID @eq): Payroll @find @softDeletes @guard(with: ["api"])
+}
+
+extend type Mutation {
+    createPayroll(input: CreatePayrollInput! @spread): Payroll @create  @can(ability: "create") @guard(with: ["api"])
+
+    updatePayroll(input: UpdatePayrollInput! @spread): Payroll @update  @can(ability: "update") @guard(with: ["api"])
+
+    deletePayroll(id: ID! @rules(apply: ["required"])): Payroll @delete  @can(ability: "delete") @guard(with: ["api"])
+
+    deletePayrolls(ids: [Int]): [Payroll]  @can(ability: "delete") @guard(with: ["api"])
+
+    deleteConcept(id: ID! @rules(apply: ["required"])): Concept @delete  @can(ability: "delete") @guard(with: ["api"])
+}

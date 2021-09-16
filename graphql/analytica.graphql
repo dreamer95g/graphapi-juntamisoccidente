@@ -1,0 +1,57 @@
+type ThreeMonths {
+    year: Int
+    month: Int
+    members: Int
+    discipleship: Int
+    kids: Int
+    teens: Int
+    youngs: Int
+    men: Int
+    ladies: Int
+    baptist_family: Int
+    ministered_lives: Int
+}
+
+type HomeData {
+    members: Int
+    kids: Int
+    teens: Int
+    youngs: Int
+    men: Int
+    ladies: Int
+    first_year: Int
+    secondly_year: Int
+    third_year: Int
+    fourth_year: Int
+    last_year: Int
+    faith_profession: Int
+    baptism: Int
+}
+
+extend type Query {
+    threeMonthsChurch(
+        church_id: Int!
+        three_selected: String!
+        year: Int!
+    ): ThreeMonths @guard(with: ["api"])
+
+    threeMonthsCurriculum(
+        curriculum_id: Int!
+        three_selected: String!
+        year: Int!
+    ): ThreeMonths @guard(with: ["api"])
+
+    threeMonthsDistrict(
+        district_id: Int!
+        three_selected: String!
+        year: Int!
+    ): ThreeMonths @guard(with: ["api"])
+
+    threeMonthsSponsor(
+        sponsor_id: Int!
+        three_selected: String!
+        year: Int!
+    ): ThreeMonths @guard(with: ["api"])
+
+    homeAnalytica: HomeData @guard(with: ["api"])
+}

@@ -1,0 +1,59 @@
+type Sunday {
+    id: ID!
+    s1: Int!
+    s2: Int!
+    s3: Int!
+    s4: Int!
+    department: Department @belongsTo
+}
+
+type Grid {
+    id: Int
+    department: String
+    s1: Int
+    s2: Int
+    s3: Int
+    s4: Int
+    average: Int
+}
+
+input CreateSundayInput {
+	s1: Int!
+	s2: Int!
+	s3: Int!
+	s4: Int!
+	department: DepartmentInput
+}
+
+input UpdateSundayInput {
+	id: ID!
+	s1: Int!
+	s2: Int!
+	s3: Int!
+	s4: Int!
+	department: DepartmentInput
+}
+
+input GridListInput {
+	grid: [GridInput]
+}
+
+
+input DepartmentInput {
+    connect: ID!
+}
+
+input GridInput {
+	id: Int
+	department: String
+	s1: Int
+	s2: Int
+	s3: Int
+	s4: Int
+	average: Int
+}
+
+extend type Query {
+ sundaysUtility(input: GridListInput): [Grid] @guard(with: ["api"])
+ sundays: [Sunday] @all @softDeletes @guard(with: ["api"])
+}
